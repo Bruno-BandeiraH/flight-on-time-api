@@ -1,4 +1,9 @@
 package com.flightontime.api.infra.validations;
 
-public interface RepositoryOrigem {
+
+import com.flightontime.api.dto.RequestDTO;
+
+public interface RepositoryValidator {
+    void validator(RequestDTO data);
+
 }
