@@ -19,7 +19,6 @@ public class RestExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
-    // Global handler
     @ExceptionHandler(ValidatorException.class)
     public ResponseEntity<ValidationError> handleValidationExceptions(ValidatorException ex) {
         var error = new ValidationError(ex.getField(), ex.getMessage());
