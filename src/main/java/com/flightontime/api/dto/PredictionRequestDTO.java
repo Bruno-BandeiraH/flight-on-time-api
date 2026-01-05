@@ -13,12 +13,12 @@ public record PredictionRequestDTO(
 
     @JsonProperty("icao_aerodromo_origem")
     @NotBlank(message = "icao_aerodromo_origem é obrigatório")
-    @Pattern(regexp = "[A-Z]{4}", message = "O campo deve conter apenas 4 letras maiúsculas")
+    @Pattern(regexp = "[A-Z]{4}", message = "O campo deve conter 4 letras maiúsculas")
     String icaoOrigin,
 
     @JsonProperty("icao_aerodromo_destino")
     @NotBlank(message = "icao_aerodromo_destino é obrigatório")
-    @Pattern(regexp = "[A-Z]{4}", message = "O campo deve conter apenas 4 letras maiúsculas")
+    @Pattern(regexp = "[A-Z]{4}", message = "O campo deve conter 4 letras maiúsculas")
     String icaoDestination,
 
     @JsonProperty("hora_prevista")
