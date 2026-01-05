@@ -1,7 +1,7 @@
 package com.flightontime.api.service;
 
-import com.flightontime.api.dto.RequestDTO;
-import com.flightontime.api.dto.ResponseDTO;
+import com.flightontime.api.dto.PredictionRequestDTO;
+import com.flightontime.api.dto.PredictionResponseDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -15,12 +15,12 @@ public class PredictionService {
         this.predictionWebClient = predictionWebClient;
     }
 
-    public ResponseDTO predict(RequestDTO request) {
+    public PredictionResponseDTO predict(PredictionRequestDTO request) {
         return predictionWebClient.post()
             .uri("/predict")
             .bodyValue(request)
             .retrieve()
-            .bodyToMono(ResponseDTO.class)
+            .bodyToMono(PredictionResponseDTO.class)
             .block();
     }
 }

@@ -1,9 +1,9 @@
 package com.flightontime.api.infra.validations;
 
 
-import com.flightontime.api.dto.RequestDTO;
+import com.flightontime.api.dto.PredictionRequestDTO;
 
 public interface RepositoryValidator {
-    void validator(RequestDTO data);
+    void validator(PredictionRequestDTO data);
 
 }
