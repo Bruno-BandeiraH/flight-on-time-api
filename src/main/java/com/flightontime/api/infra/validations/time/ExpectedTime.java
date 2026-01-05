@@ -11,9 +11,6 @@ import java.time.LocalDateTime;
 public class ExpectedTime implements RepositoryValidator {
     @Override
     public void validator(PredictionRequestDTO data) {
-        if (data.expectedTime() == null) {
-            throw new ValidatorException("hora_prevista", "Horario é obrigatório");
-        }
         if (data.expectedTime().isAfter(LocalDateTime.now().plusYears(1))) {
             throw new ValidatorException("hora_prevista", "A data não pode ser superior a 1 ano");
         }
