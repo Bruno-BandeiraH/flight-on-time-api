@@ -4,6 +4,7 @@ import com.flightontime.api.dto.PredictionRequestDTO;
 import com.flightontime.api.dto.PredictionResponseDTO;
 import com.flightontime.api.infra.validations.RepositoryValidator;
 import com.flightontime.api.service.PredictionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ public class PredictionController {
     }
 
     @PostMapping("/predict")
-    public ResponseEntity<PredictionResponseDTO> getPrediction(@RequestBody PredictionRequestDTO data) {
+    public ResponseEntity<PredictionResponseDTO> getPrediction(@RequestBody @Valid PredictionRequestDTO data) {
         validators.forEach(v -> v.validator(data));
         PredictionResponseDTO response = predictionService.predict(data);
         return ResponseEntity.ok(response);
