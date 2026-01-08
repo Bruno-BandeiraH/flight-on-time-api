@@ -24,19 +24,14 @@ class PredictionServiceTest {
 
     @Mock
     private WebClient predictionWebClient;
-
     @Mock
     private WebClient.RequestBodyUriSpec requestBodyUriSpec;
-
     @Mock
     private WebClient.RequestBodySpec requestBodySpec;
-
     @Mock
     private WebClient.RequestHeadersSpec requestHeadersSpec;
-
     @Mock
     private WebClient.ResponseSpec responseSpec;
-
     @InjectMocks
     private PredictionService service;
 
@@ -47,7 +42,6 @@ class PredictionServiceTest {
         when(requestBodySpec.bodyValue(any())).thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
     }
-
 
     @Test
     void shouldReturnPredictionWhenApiRespondsSuccessfully() {
@@ -144,5 +138,4 @@ class PredictionServiceTest {
             55
         );
     }
-
 }
