@@ -6,9 +6,9 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 public record PredictionRequestDTO(
-    @JsonProperty("icao_empresa_aerea")
-    @NotBlank(message = "icao_empresa_aerea é obrigatória")
-    @Pattern(regexp = "[A-Z]{2}", message = "O campo deve conter 2 letras maiúsculas")
+    @JsonProperty("icao_empresa")
+    @NotBlank(message = "icao_empresa é obrigatória")
+    @Pattern(regexp = "[A-Z]{3}", message = "O campo deve conter 3 letras maiúsculas")
     String icaoAirline,
 
     @JsonProperty("icao_aerodromo_origem")
@@ -21,20 +21,21 @@ public record PredictionRequestDTO(
     @Pattern(regexp = "[A-Z]{4}", message = "O campo deve conter 4 letras maiúsculas")
     String icaoDestination,
 
-    @JsonProperty("hora_prevista")
-    @NotNull(message = "hora_prevista não pode ser nula")
+    @JsonProperty("partida_prevista")
+    @NotNull(message = "partida_prevista não pode ser nula")
     LocalDateTime expectedTime,
 
-    @JsonProperty("voos_no_slot")
-    @NotNull(message = "voos_no_slot não pode ser nulo")
-    @Min(value = 1, message = "A quantidade de voos no slot não pode ser negativa")
-    Integer slotFlights,
+    @JsonProperty("distancia_km")
+    @NotNull(message = "distancia_km não pode ser nulo")
+    @DecimalMax(value = "3500.0", message = "A distância não pode ser superior a 3500km")
+    @DecimalMin(value = "50.0", message = "A distância não pode ser inferior a 50km")
+    Float distance,
 
-    @JsonProperty("tempo_voo_estimado")
-    @NotNull(message = "tempo_voo_estimado não pode ser nulo")
-    @Min(value = 20, message = "o tempo de voo não pode ser menor que 20 minutos")
-    @Max(value = 420, message = "O tempo de voo não pode ser superior a 7 horas")
-    Integer estimatedFlightTime
+    @JsonProperty("tempo_voo_estimado_hr")
+    @NotNull(message = "tempo_voo_estimado_hr não pode ser nulo")
+    @DecimalMin(value = "0.2", message = "o tempo de voo não pode ser menor que 20 minutos")
+    @DecimalMax(value = "7.0", message = "O tempo de voo não pode ser superior a 7 horas")
+    Float estimatedFlightTime
 ) {
 }
 

@@ -14,7 +14,9 @@ import java.time.LocalDateTime;
                 @Index(name = "idx_airline", columnList = "airline"),
                 @Index(name = "idx_origin", columnList = "origin_airport"),
                 @Index(name = "idx_destination", columnList = "destination_airport"),
-                @Index(name = "idx_prediction", columnList = "prediction_result")
+                @Index(name = "idx_distance", columnList = "distance"),
+                @Index(name = "idx_prediction", columnList = "prediction"),
+                @Index(name = "idx_probability_of_delay", columnList = "probability")
         })
 @Data
 @Builder
@@ -39,15 +41,15 @@ public class PredictionData {
     @Column(name = "expected_time", nullable = false)
     private LocalDateTime expectedTime;
 
-    @Column(name = "slots_flights", nullable = false)
-    private Integer slotFlights;
-
     @Column(name = "estimated_flight_time", nullable = false)
-    private Integer estimatedFlightTime;
+    private Float estimatedFlightTime;
+
+    @Column(name = "distance", nullable = false)
+    private Float distance;
 
     // Dados de Saída (PredictionResponseDTO)
     @Column(name = "prediction", nullable = false, length = 50)
-    private String prediction;
+    private Integer prediction;
 
     @Column(name = "probability", nullable = false)
     private Double probability;
@@ -61,7 +63,7 @@ public class PredictionData {
                 .icaoOrigin(requestDTO.icaoOrigin())
                 .icaoDestination(requestDTO.icaoDestination())
                 .expectedTime(requestDTO.expectedTime())
-                .slotFlights(requestDTO.slotFlights())
+                .distance(requestDTO.distance())
                 .estimatedFlightTime(requestDTO.estimatedFlightTime())
                 .prediction(responseDTO.prediction())
                 .probability(responseDTO.probability())

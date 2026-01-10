@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record PredictionResponseDTO(
 
-    @JsonProperty("previsao") String prediction,
-    @JsonProperty("probabilidade") Double probability
+    @JsonProperty("previsao_atraso") Integer prediction,
+    @JsonProperty("probabilidade_atraso") Double probability
 ) {
 }

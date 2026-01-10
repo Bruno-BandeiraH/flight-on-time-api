@@ -17,14 +17,14 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
         SELECT new map(
             f.icaoAirline as airline,
             COUNT(f) as totalFlights,
-            SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) as onTimeFlights,
-            (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage,
+            SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) as onTimeFlights,
+            (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage,
             AVG(f.probability) as avgProbability
         )
         FROM PredictionData f
         GROUP BY f.icaoAirline
         HAVING COUNT(f) >= 1
-        ORDER BY (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
+        ORDER BY (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
     """)
     List<Object> findAirlinesWithHighestOnTimeRate();
 
@@ -37,14 +37,14 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
             f.icaoOrigin as originAirport,
             f.icaoDestination as destinationAirport,
             COUNT(f) as totalFlights,
-            SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) as onTimeFlights,
-            (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage,
+            SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) as onTimeFlights,
+            (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage,
             AVG(f.estimatedFlightTime) as avgFlightTime
             )
             FROM PredictionData f
             GROUP BY f.icaoOrigin, f.icaoDestination
             HAVING COUNT(f) >= 1
-            ORDER BY (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
+            ORDER BY (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
     """)
     List<Object> findRoutesWithHighestOnTimeRate();
 
@@ -56,14 +56,14 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
         SELECT new map(
             f.icaoAirline as airline,
             COUNT(f) as totalFlights,
-            SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) as delayedFlights,
-            (SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as delayPercentage,
+            SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) as delayedFlights,
+            (SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as delayPercentage,
             AVG(f.probability) as avgProbability
         )
         FROM PredictionData f
         GROUP BY f.icaoAirline
         HAVING COUNT(f) >= 1
-        ORDER BY (SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
+        ORDER BY (SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
     """)
     List<Object> findAirlinesWithHighestDelayRate();
 
@@ -75,14 +75,14 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
             f.icaoOrigin as originAirport,
             f.icaoDestination as destinationAirport,
             COUNT(f) as totalFlights,
-            SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) as delayedFlights,
-            (SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as delayPercentage,
+            SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) as delayedFlights,
+            (SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as delayPercentage,
             AVG(f.estimatedFlightTime) as avgFlightTime
         )
         FROM PredictionData f
         GROUP BY f.icaoOrigin, f.icaoDestination
         HAVING COUNT(f) >= 1
-        ORDER BY (SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
+        ORDER BY (SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
     """)
     List<Object> findRoutesWithHighestDelayRate();
 
@@ -92,8 +92,8 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
     @Query("""
         SELECT new map(
             COUNT(f) as totalPredictions,
-            SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) as totalOnTime,
-            SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) as totalDelay,
+            SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) as totalOnTime,
+            SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) as totalDelay,
             AVG(f.probability) as avgProbability,
             AVG(f.estimatedFlightTime) as avgEstimatedTime
         )
@@ -108,9 +108,9 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
         SELECT new map(
             YEAR(f.expectedTime) as year,
             COUNT(f) as totalPredictions,
-            SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) as totalOnTime,
-            SUM(CASE WHEN f.prediction = 'Atrasado' THEN 1 ELSE 0 END) as totalDelayed,
-            (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage
+            SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) as totalOnTime,
+            SUM(CASE WHEN f.prediction = 1 THEN 1 ELSE 0 END) as totalDelayed,
+            (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage
         )
         FROM PredictionData f
         GROUP BY YEAR(f.expectedTime)
@@ -125,14 +125,14 @@ public interface RepositoryPredictionData extends JpaRepository<PredictionData, 
         SELECT new map(
             f.icaoAirline as airline,
             COUNT(f) as totalFlights,
-            SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) as onTimeFlights,
-            (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage
+            SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) as onTimeFlights,
+            (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) as onTimePercentage
         )
         FROM PredictionData f
         WHERE YEAR(f.expectedTime) = :year
         GROUP BY f.icaoAirline
         HAVING COUNT(f) >= 10
-        ORDER BY (SUM(CASE WHEN f.prediction = 'Pontual' THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
+        ORDER BY (SUM(CASE WHEN f.prediction = 0 THEN 1 ELSE 0 END) * 100.0 / COUNT(f)) DESC
     """)
     List<Object> findAirlinesWithHighestOnTimeRateByYear(@Param("year") int year);
 
