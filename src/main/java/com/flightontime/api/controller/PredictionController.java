@@ -1,11 +1,12 @@
 package com.flightontime.api.controller;
 
+import com.flightontime.api.dto.FlightDTO;
 import com.flightontime.api.dto.PredictionRequestDTO;
 import com.flightontime.api.dto.PredictionResponseDTO;
 import com.flightontime.api.infra.validations.RepositoryValidator;
+import com.flightontime.api.service.FlightService;
 import com.flightontime.api.service.PredictionService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,18 +18,20 @@ import java.util.List;
 public class PredictionController {
 
     private final PredictionService predictionService;
+    private final FlightService flightService;
+    private final List<RepositoryValidator> validators;
 
-    @Autowired
-    private List<RepositoryValidator> validators;
-
-    public PredictionController(PredictionService predictionService) {
+    public PredictionController(PredictionService predictionService, FlightService flightService, List<RepositoryValidator> validators) {
         this.predictionService = predictionService;
+        this.flightService = flightService;
+        this.validators = validators;
     }
 
     @PostMapping("/predict")
-    public ResponseEntity<PredictionResponseDTO> getPrediction(@RequestBody @Valid PredictionRequestDTO data) {
-        validators.forEach(v -> v.validator(data));
-        PredictionResponseDTO response = predictionService.predict(data);
+    public ResponseEntity<PredictionResponseDTO> getPrediction(@RequestBody @Valid PredictionRequestDTO requestData) {
+        validators.forEach(v -> v.validator(requestData));
+        PredictionResponseDTO response = predictionService.predict(requestData);
+        flightService.save(new FlightDTO(requestData, response));
         return ResponseEntity.ok(response);
     }
 }

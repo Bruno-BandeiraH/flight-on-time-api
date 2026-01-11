@@ -1,6 +1,7 @@
-package com.flightontime.api.entities;
+package com.flightontime.api.domain;
 
 
+import com.flightontime.api.dto.FlightDTO;
 import com.flightontime.api.dto.PredictionRequestDTO;
 import com.flightontime.api.dto.PredictionResponseDTO;
 import jakarta.persistence.*;
@@ -9,7 +10,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tb_predictions",
+@Table(name = "tb_flights",
         indexes = {
                 @Index(name = "idx_airline", columnList = "airline"),
                 @Index(name = "idx_origin", columnList = "origin_airport"),
@@ -22,7 +23,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PredictionData {
+public class Flight {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,17 +49,28 @@ public class PredictionData {
     private Float distance;
 
     // Dados de Saída (PredictionResponseDTO)
-    @Column(name = "prediction", nullable = false, length = 50)
+    @Column(name = "prediction", nullable = false, length = 2)
     private Integer prediction;
 
     @Column(name = "probability", nullable = false)
-    private Double probability;
+    private Float probability;
 
-    public static PredictionData fromDTOs(
+    public Flight(FlightDTO data) {
+        this.icaoAirline = data.icaoAirline();
+        this.icaoOrigin = data.icaoOrigin();
+        this.icaoDestination = data.icaoDestination();
+        this.estimatedFlightTime = data.estimatedFlightTime();
+        this.distance = data.distance();
+        this.expectedTime = data.expectedTime();
+        this.prediction = data.prediction();
+        this.probability = data.probability();
+    }
+
+    public static Flight fromDTOs(
             PredictionRequestDTO requestDTO,
             PredictionResponseDTO responseDTO) {
 
-        return PredictionData.builder()
+        return Flight.builder()
                 .icaoAirline(requestDTO.icaoAirline())
                 .icaoOrigin(requestDTO.icaoOrigin())
                 .icaoDestination(requestDTO.icaoDestination())
