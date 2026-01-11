@@ -1,11 +1,11 @@
-package com.flightontime.api.entities;
+package com.flightontime.api.domain;
 
+import com.flightontime.api.dto.*;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,43 +14,43 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class PredictionDataTest {
+class FlightTest {
 
     @Autowired
-    private RepositoryPredictionData repositoryPredictionData;
+    private FlightRepository flightRepository;
 
     @BeforeEach
     void setUp() {
-        repositoryPredictionData.deleteAll();
+        flightRepository.deleteAll();
 
-        PredictionData record1 = PredictionData.builder()
-                .icaoAirline("GLO")
-                .icaoOrigin("SBGR")
-                .icaoDestination("SBBR")
-                .expectedTime(LocalDateTime.of(2023, 5, 15, 14, 30))
-                .slotFlights(5)
-                .estimatedFlightTime(120)
-                .prediction("pontual")
-                .probability(0.92)
-                .build();
+        Flight record1 = Flight.builder()
+            .icaoAirline("GLO")
+            .icaoOrigin("SBGR")
+            .icaoDestination("SBBR")
+            .expectedTime(LocalDateTime.of(2023, 5, 15, 14, 30))
+            .estimatedFlightTime(1.0F)
+            .distance(60F)
+            .prediction(0)
+            .probability(0.92F)
+            .build();
 
-        PredictionData record2 = PredictionData.builder()
-                .icaoAirline("GLO")
-                .icaoOrigin("SBGR")
-                .icaoDestination("SBBR")
-                .expectedTime(LocalDateTime.of(2023, 5, 16, 10, 0))
-                .slotFlights(8)
-                .estimatedFlightTime(125)
-                .prediction("atrasado")
-                .probability(0.78)
-                .build();
+        Flight record2 = Flight.builder()
+            .icaoAirline("GLO")
+            .icaoOrigin("SBGR")
+            .icaoDestination("SBBR")
+            .expectedTime(LocalDateTime.of(2023, 5, 16, 10, 0))
+            .estimatedFlightTime(1.2F)
+            .distance(60F)
+            .prediction(1)
+            .probability(0.78F)
+            .build();
 
-        repositoryPredictionData.saveAll(List.of(record1, record2));
+        flightRepository.saveAll(List.of(record1, record2));
     }
 
     @Test
     void testFindAirlinesWithHighestOnTimeRate() {
-        List<Object> result = repositoryPredictionData.findAirlinesWithHighestOnTimeRate();
+        List<AirlineOnTimeData> result = flightRepository.findAirlinesWithHighestOnTimeRate();
 
         assertNotNull(result);
 
@@ -60,7 +60,7 @@ class PredictionDataTest {
 
     @Test
     void testFindAirlinesWithHighestDelayRate() {
-        List<Object> result = repositoryPredictionData.findAirlinesWithHighestDelayRate();
+        List<AirlineDelayedData> result = flightRepository.findAirlinesWithHighestDelayRate();
 
         assertNotNull(result);
 
@@ -70,7 +70,7 @@ class PredictionDataTest {
 
     @Test
     void testFindRoutesWithHighestOnTimeRate() {
-        List<Object> result = repositoryPredictionData.findRoutesWithHighestOnTimeRate();
+        List<RouteOnTimeData> result = flightRepository.findRoutesWithHighestOnTimeRate();
 
         assertNotNull(result);
 
@@ -80,7 +80,7 @@ class PredictionDataTest {
 
     @Test
     void testFindRoutesWithHighestDelayRate() {
-        List<Object> result = repositoryPredictionData.findRoutesWithHighestDelayRate();
+        List<RouteDelayedData> result = flightRepository.findRoutesWithHighestDelayRate();
 
         assertNotNull(result);
 
@@ -90,7 +90,7 @@ class PredictionDataTest {
 
     @Test
     void testGeneralStatistics() {
-        Object result = repositoryPredictionData.getGeneralStatistics();
+        Object result = flightRepository.getGeneralStatistics();
 
         assertNotNull(result);
 
@@ -100,7 +100,7 @@ class PredictionDataTest {
 
     @Test
     void testGetStatisticsByYear() {
-        List<Object> result = repositoryPredictionData.getStatisticsByYear();
+        List<StatisticsByYearData> result = flightRepository.getStatisticsByYear();
 
         assertNotNull(result);
 
@@ -110,7 +110,7 @@ class PredictionDataTest {
 
     @Test
     void testCountTotalPredictions() {
-        long total = repositoryPredictionData.count();
+        long total = flightRepository.count();
 
         assertTrue(total > 0, "Deveria ter predições");
 

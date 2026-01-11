@@ -45,7 +45,7 @@ class PredictionServiceTest {
 
     @Test
     void shouldReturnPredictionWhenApiRespondsSuccessfully() {
-        var expectedResponse = new PredictionResponseDTO("Atrasado", 0.82);
+        var expectedResponse = new PredictionResponseDTO(1, 0.82F);
 
         when(responseSpec.bodyToMono(PredictionResponseDTO.class))
             .thenReturn(Mono.just(expectedResponse));
@@ -53,27 +53,27 @@ class PredictionServiceTest {
         var response = service.predict(buildValidRequest());
 
         assertNotNull(response);
-        assertEquals("Atrasado", response.prediction());
-        assertEquals(0.82, response.probability());
+        assertEquals(1, response.prediction());
+        assertEquals(0.82F, response.probability());
     }
 
     @Test
     void shouldMapResponseCorrectly() {
-        var expectedResponse = new PredictionResponseDTO("Pontual", 0.15);
+        var expectedResponse = new PredictionResponseDTO(0, 0.15F);
 
         when(responseSpec.bodyToMono(PredictionResponseDTO.class))
             .thenReturn(Mono.just(expectedResponse));
 
         var response = service.predict(buildValidRequest());
 
-        assertEquals("Pontual", response.prediction());
-        assertEquals(0.15, response.probability());
+        assertEquals(0, response.prediction());
+        assertEquals(0.15F, response.probability());
     }
 
     @Test
     void shouldSendCorrectDataToApi() {
         when(responseSpec.bodyToMono(PredictionResponseDTO.class))
-            .thenReturn(Mono.just(new PredictionResponseDTO("Pontual", 0.10)));
+            .thenReturn(Mono.just(new PredictionResponseDTO(0, 0.10F)));
 
         var request = buildValidRequest();
 
@@ -116,7 +116,7 @@ class PredictionServiceTest {
     @Test
     void shouldReturnResponseWithNullFieldWhenApiReturnsNullMandatoryField() {
         var responseWithNull =
-            new PredictionResponseDTO(null, 0.5);
+            new PredictionResponseDTO(null, 0.5F);
 
         when(responseSpec.bodyToMono(PredictionResponseDTO.class))
             .thenReturn(Mono.just(responseWithNull));
@@ -125,7 +125,7 @@ class PredictionServiceTest {
 
         assertNotNull(response);
         assertNull(response.prediction());
-        assertEquals(0.5, response.probability());
+        assertEquals(0.5F, response.probability());
     }
 
     private PredictionRequestDTO buildValidRequest() {
@@ -134,8 +134,8 @@ class PredictionServiceTest {
             "SBGR",
             "SBRJ",
             LocalDateTime.now().plusDays(1),
-            12,
-            55
+            120F,
+            3F
         );
     }
 }

@@ -41,7 +41,7 @@ class ExpectedTimeTest {
             () -> expectedTimeValidator.validator(request)
         );
 
-        assertEquals("hora_prevista", exception.getField());
+        assertEquals("partida_prevista", exception.getField());
         assertEquals(
             "A data não pode ser superior a 1 ano",
             exception.getMessage()
@@ -54,8 +54,8 @@ class ExpectedTimeTest {
             "GRU",
             "SDU",
             expectedTime,
-            20,
-            120
+            600F,
+            1.2F
         );
     }
 

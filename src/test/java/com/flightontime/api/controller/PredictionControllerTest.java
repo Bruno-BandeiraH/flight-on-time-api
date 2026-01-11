@@ -42,20 +42,20 @@ class PredictionControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(validRequest()))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.previsao").value("Pontual"))
-            .andExpect(jsonPath("$.probabilidade").value(0.82));
+            .andExpect(jsonPath("$.previsao_atraso").value(0))
+            .andExpect(jsonPath("$.probabilidade_atraso").value(0.82));
     }
 
     @Test
     void shouldReturn400WhenBeanValidationFails() throws Exception {
         var invalidRequest = """
             {
-              "icao_empresa_aerea": "",
+              "icao_empresa": "",
               "icao_aerodromo_origem": "SBGR",
               "icao_aerodromo_destino": "SBRJ",
-              "hora_prevista": "2025-11-12T22:30:00",
-              "voos_no_slot": 18,
-              "tempo_voo_estimado": 55
+              "partida_prevista": "2025-11-12T22:30:00",
+              "distancia_km": 55
+              "tempo_voo_estimado_hr": 3
             }
             """;
 
@@ -67,7 +67,7 @@ class PredictionControllerTest {
 
     @Test
     void shouldReturn400WhenCustomValidatorFails() throws Exception {
-        Mockito.doThrow(new ValidatorException("icao_empresa_aerea", "Inválido"))
+        Mockito.doThrow(new ValidatorException("icao_empresa", "Inválido"))
             .when(validators)
             .forEach(any());
 
@@ -98,7 +98,7 @@ class PredictionControllerTest {
 
     private PredictionResponseDTO buildResponse() {
         return new PredictionResponseDTO(
-            "Pontual",
+            0,
             0.82
         );
     }
@@ -106,12 +106,12 @@ class PredictionControllerTest {
     private String validRequest() {
         return """
             {
-              "icao_empresa_aerea": "AZ",
+              "icao_empresa": "AZU",
               "icao_aerodromo_origem": "SBGR",
               "icao_aerodromo_destino": "SBRJ",
-              "hora_prevista": "2025-11-12T22:30:00",
-              "voos_no_slot": 18,
-              "tempo_voo_estimado": 55
+              "partida_prevista": "2025-11-12T22:30:00",
+              "distancia_km": 120,
+              "tempo_voo_estimado_hr": 5
             }
             """;
     }
