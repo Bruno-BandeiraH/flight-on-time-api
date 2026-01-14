@@ -99,7 +99,7 @@ class PredictionControllerTest {
     private PredictionResponseDTO buildResponse() {
         return new PredictionResponseDTO(
             0,
-            0.82
+            0.82f
         );
     }
 
