@@ -1,5 +1,6 @@
 package com.flightontime.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 
@@ -23,6 +24,7 @@ public record PredictionRequestDTO(
 
     @JsonProperty("partida_prevista")
     @NotNull(message = "partida_prevista não pode ser nula")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     LocalDateTime expectedTime,
 
     @JsonProperty("distancia_km")
